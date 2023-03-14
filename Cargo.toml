@@ -1,0 +1,48 @@
+[package]
+name = "kubectl-ports"
+version = "0.1.1"
+authors = ["widnyana <wid@widnyana.web.id>"]
+description = "A kubectl plugin to provide a list of exposed ports on kubernetes Pod resources"
+homepage = "https://github.com/widnyana/kubectl-ports-rs"
+repository = "https://github.com/widnyana/kubectl-ports-rs"
+edition = "2021"
+license = "MIT"
+keywords = ["kubernetes", "kubernetes-ports", "krew-plugin"]
+categories = ["development-tools", "visualization"]
+readme = "README.md"
+exclude = [
+	".github/*",
+	".vscode/*",
+]
+
+[dependencies]
+clap = { version = "4.1.8", features = ["derive", "cargo", "std"] }
+kube = { version = "0.80.0", features = [
+	"client",
+	"oauth",
+	"gzip",
+	"openssl-tls",
+	"runtime",
+	"derive"
+], default-features = true }
+k8s-openapi = { version = "0.17.0", features=["v1_24"] }
+anyhow = "1.0.69"
+tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
+tokio = { version = "1.26.0", features = ["full"] }
+tracing-bunyan-formatter = { version = "0.3.6" }
+thiserror = "1.0.39"
+tracing = "0.1.37"
+openssl = { version = "0.10.45", features = ["vendored"] }
+duct = "0.13.6"
+prettytable-rs = "0.10.0"
+
+[profile.dev]
+opt-level = 1               # Use slightly better optimizations.
+overflow-checks = false     # Disable integer overflow checks.
+incremental = true
+
+[[bin]]
+name = "kubectl-ports"
+path = "src/main.rs"
+bench = false
+doc = false

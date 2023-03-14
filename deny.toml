@@ -1,0 +1,19 @@
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+
+[licenses]
+unlicensed = "deny"
+allow = ["Apache-2.0", "MIT", "MPL-2.0", "Unicode-DFS-2016"]
+deny = []
+copyleft = "deny"
+default = "deny"
+confidence-threshold = 0.8
+exceptions = []
+
+[advisories]
+vulnerability = "deny"
+unmaintained = "warn"
+yanked = "warn"
+notice = "warn"
+ignore = []
