@@ -1,0 +1,16 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  release:
+    types: [ created, edited ]
+  pull_request:
+
+name: Main
+jobs:
+  cache:
+    uses: ./.github/workflows/cache.yml
+  package_and_release:
+    if: github.event_name == 'release'
+    uses: ./.github/workflows/release.yml
