@@ -16,7 +16,7 @@ exclude = [
 ]
 
 [dependencies]
-clap = { version = "4.1.8", features = ["derive", "cargo", "std"] }
+clap = { version = "4.1.8", features = ["derive", "cargo", "std", "wrap_help"] }
 kube = { version = "0.80.0", features = [
 	"client",
 	"oauth",

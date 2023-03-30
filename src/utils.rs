@@ -19,7 +19,10 @@
 //
 // More info: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle#pod-phase
 
-use k8s_openapi::api::core::v1::Pod;
+use k8s_openapi::{
+	api::core::v1::Pod,
+	apimachinery::pkg::util::intstr::IntOrString,
+};
 
 #[allow(clippy::match_same_arms)]
 pub fn is_scheduled(pod: &Pod) -> bool {
@@ -41,4 +44,11 @@ pub fn is_scheduled(pod: &Pod) -> bool {
 			})
 		})
 		.unwrap_or(false)
+}
+
+pub fn from_int_or_string_tostring(s: IntOrString) -> String {
+	match s {
+		IntOrString::Int(i) => i.to_string(),
+		IntOrString::String(s) => s,
+	}
 }
