@@ -1,4 +1,7 @@
-use clap::Parser;
+use clap::{
+	Parser,
+	ValueEnum,
+};
 
 #[derive(Parser, Debug)]
 #[clap(
@@ -13,4 +16,28 @@ pub struct CliOpts {
 	/// Show only pods from this namespace
 	#[clap(short, long, value_parser)]
 	pub namespace: Option<String>,
+
+	#[clap(
+		value_enum,
+		default_value_t = Kind::Pod,
+		help = String::from("select Kubernetes resource you want to list the port(s) ")
+	)]
+	pub resource: Kind,
 }
+
+#[derive(ValueEnum, Debug, PartialEq, Eq, Clone, Copy)]
+pub enum Kind {
+	/// (default) Enable both coloring and formatting
+	Pod,
+	/// Apply syntax highlighting to output
+	Service,
+	Svc,
+}
+// impl Kind {
+// 	pub fn as_str(&self) -> &'static str {
+// 		match self {
+// 			Kind::Pod => "pod",
+// 			Kind::Service => "svc",
+// 		}
+// 	}
+// }

@@ -14,6 +14,7 @@ use crate::{
 
 pub mod errors;
 pub mod pods;
+pub mod service;
 
 #[instrument]
 async fn refresh_kube_config(context: &Option<String>) -> Result<(), AppError> {

@@ -12,10 +12,19 @@ use tracing_subscriber::{
 };
 
 use crate::{
-	display::render_pod_as_table,
-	extractor::get_ports_from_pods,
+	display::{
+		render_pod_as_table,
+		render_svc_as_table,
+	},
+	extractor::{
+		get_ports_from_pods,
+		get_ports_from_svc,
+	},
 	k8s::new_client,
-	opts::CliOpts,
+	opts::{
+		CliOpts,
+		Kind,
+	},
 };
 
 mod display;
@@ -45,13 +54,22 @@ async fn main() {
 	init_tracing();
 
 	let mut cli_opts = CliOpts::parse();
-	let client = new_client(&cli_opts).await.unwrap();
+
+	let client = match new_client(&cli_opts).await {
+		Ok(kc) => kc,
+		Err(err) => panic!("Problem connecting to cluster: {:?}", err),
+	};
 
 	// override current namespace
 	if cli_opts.namespace.is_none() {
 		cli_opts.namespace = Option::from(client.default_namespace().to_string());
 	}
 
-	let resources = get_ports_from_pods(client, &cli_opts.namespace).await;
-	render_pod_as_table(&resources).await;
+	if cli_opts.resource == Kind::Pod {
+		let resources = get_ports_from_pods(client, &cli_opts.namespace).await;
+		render_pod_as_table(&resources).await;
+	} else if cli_opts.resource == Kind::Service || cli_opts.resource == Kind::Svc {
+		let _resources = get_ports_from_svc(client, &cli_opts.namespace).await;
+		render_svc_as_table(&_resources).await;
+	}
 }
