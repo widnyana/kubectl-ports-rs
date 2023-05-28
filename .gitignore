@@ -1,1 +1,4 @@
 /target
+bin
+notes.txt
+test-action.sh
