@@ -31,9 +31,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.69"
+version = "1.0.71"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "224afbd727c3d6e4b90103ece64b8d1b67fbb1973b1046c2281eed3f3803f800"
+checksum = "9c7d0618f0e0b7e8ff11427422b64564d5fb0be1940354bfe2e0529b18a9d9b8"
 
 [[package]]
 name = "async-compression"
@@ -144,7 +144,6 @@ dependencies = [
  "once_cell",
  "strsim",
  "termcolor",
- "terminal_size",
 ]
 
 [[package]]
@@ -324,18 +323,6 @@ dependencies = [
  "libc",
  "redox_users",
  "winapi",
-]
-
-[[package]]
-name = "duct"
-version = "0.13.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "37ae3fc31835f74c2a7ceda3aeede378b0ae2e74c8f1c36559fcc9ae2a4e7d3e"
-dependencies = [
- "libc",
- "once_cell",
- "os_pipe",
- "shared_child",
 ]
 
 [[package]]
@@ -894,7 +881,6 @@ version = "0.2.0"
 dependencies = [
  "anyhow",
  "clap",
- "duct",
  "k8s-openapi",
  "kube",
  "openssl",
@@ -1104,16 +1090,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7940cf2ca942593318d07fcf2596cdca60a85c9e7fab408a5e21a4f9dcd40d87"
 dependencies = [
  "num-traits",
-]
-
-[[package]]
-name = "os_pipe"
-version = "1.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a53dbb20faf34b16087a931834cba2d7a73cc74af2b7ef345a4c8324e2409a12"
-dependencies = [
- "libc",
- "windows-sys",
 ]
 
 [[package]]
@@ -1502,16 +1478,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "shared_child"
-version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0d94659ad3c2137fef23ae75b03d5241d633f8acded53d672decfa0e6e0caef"
-dependencies = [
- "libc",
- "winapi",
-]
-
-[[package]]
 name = "signal-hook-registry"
 version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1607,16 +1573,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be55cf8942feac5c765c2c993422806843c9a9a45d4d5c407ad6dd2ea95eb9b6"
 dependencies = [
  "winapi-util",
-]
-
-[[package]]
-name = "terminal_size"
-version = "0.2.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c9afddd2cec1c0909f06b00ef33f94ab2cc0578c4a610aa208ddfec8aa2b43a"
-dependencies = [
- "rustix",
- "windows-sys",
 ]
 
 [[package]]

@@ -1,48 +1,90 @@
 [package]
 name = "kubectl-ports"
-version = "0.2.0"
+edition = "2021"
+version = "1.0.0"
 authors = ["widnyana <wid@widnyana.web.id>"]
 description = "A kubectl plugin to provide a list of exposed ports on kubernetes Pod resources"
 homepage = "https://github.com/widnyana/kubectl-ports-rs"
-repository = "https://github.com/widnyana/kubectl-ports-rs"
-edition = "2021"
-license = "MIT"
+readme = "README.md"
 keywords = ["kubernetes", "kubernetes-ports", "krew-plugin"]
 categories = ["development-tools", "visualization"]
-readme = "README.md"
-exclude = [
-	".github/*",
-	".vscode/*",
-]
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/widnyana/kubectl-ports-rs"
+exclude = [".github/*", ".vscode/*", "target", "bin"]
+
 
 [dependencies]
-clap = { version = "4.1.8", features = ["derive", "cargo", "std", "wrap_help"] }
-kube = { version = "0.80.0", features = [
-	"client",
-	"oauth",
-	"gzip",
-	"openssl-tls",
-	"runtime",
-	"derive"
-], default-features = true }
-k8s-openapi = { version = "0.17.0", features=["v1_24"] }
-anyhow = "1.0.69"
-tracing-subscriber = { version = "0.3.16", features = ["env-filter"] }
-tokio = { version = "1.26.0", features = ["full"] }
-tracing-bunyan-formatter = { version = "0.3.6" }
+anyhow = "1.0.71"
+prettytable-rs = "0.10.0"
 thiserror = "1.0.39"
 tracing = "0.1.37"
-openssl = { version = "0.10.48", features = ["vendored"] }
-duct = "0.13.6"
-prettytable-rs = "0.10.0"
+
+[dependencies.clap]
+version = "4.1.8"
+features = [
+    "cargo",
+    "suggestions",
+    "usage",
+    "std",
+    "error-context",
+    "derive",
+    "color",
+]
+optional = false
+default-features = false
+
+[dependencies.k8s-openapi]
+version = "0.18.0"
+features = ["v1_24"]
+optional = false
+
+[dependencies.kube]
+version = "0.82.2"
+features = ["client", "oauth", "gzip", "openssl-tls", "runtime", "derive"]
+optional = false
+default-features = true
+
+[dependencies.openssl]
+version = "0.10.48"
+features = ["vendored"]
+optional = false
+
+[dependencies.tokio]
+version = "1.26.0"
+features = ["full"]
+optional = false
+
+[dependencies.tracing-bunyan-formatter]
+version = "0.3.6"
+features = []
+optional = false
+
+[dependencies.tracing-subscriber]
+version = "0.3.16"
+features = ["env-filter"]
+optional = false
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 8
+panic = "abort"
+strip = true
+
+[profile.release.package]
 
 [profile.dev]
-opt-level = 1               # Use slightly better optimizations.
-overflow-checks = false     # Disable integer overflow checks.
+opt-level = 1
 incremental = true
+overflow-checks = false
+
+[profile.dev.package]
 
 [[bin]]
-name = "kubectl-ports"
 path = "src/main.rs"
+name = "kubectl-ports"
 bench = false
 doc = false
+plugin = false
+proc-macro = false
+required-features = []

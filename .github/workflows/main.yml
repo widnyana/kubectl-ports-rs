@@ -11,6 +11,7 @@ name: Main
 jobs:
   cache:
     uses: ./.github/workflows/cache.yml
-  package_and_release:
-    if: github.event_name == 'release'
-    uses: ./.github/workflows/release.yml
+  build_and_release:
+    needs: cache
+    uses: ./.github/workflows/build-release.yaml
+    # if: github.event_name == 'release'

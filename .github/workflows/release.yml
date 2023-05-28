@@ -1,15 +1,14 @@
 on:
-  release:
-    types: [created, edited]
-  push:
   workflow_call:
-
-name: release
 jobs:
   release:
-    name: release ${{ matrix.target }} (with non-required env)
-    runs-on: ubuntu-latest
+    name: release ${{ matrix.target }}
+    runs-on: ${{ matrix.platform.os }}
     if: github.event_name == 'release'
+    env:
+      RUST_BACKTRACE: 1
+      CARGO_TERM_COLOR: always
+      CARGO_UNSTABLE_SPARSE_REGISTRY: true
     strategy:
       fail-fast: false
       matrix:
@@ -20,9 +19,16 @@ jobs:
             archive: tar.gz
           - target: x86_64-apple-darwin
             archive: zip
+          - target: aarch64-apple-darwin
+            archive: zip
+
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v3
       - uses: rui314/setup-mold@v1
+      - name: Cache cargo & target directories
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: "v2"
       - name: Compile and release
         uses: rust-build/rust-build.action@v1.4.3
         env:
@@ -33,3 +39,4 @@ jobs:
           SRC_DIR: "src"
           ARCHIVE_TYPES: ${{ matrix.archive }}
           MINIFY: "yes"
+          UPLOAD_MODE: "release"
