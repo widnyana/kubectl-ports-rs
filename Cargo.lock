@@ -1143,10 +1143,11 @@ dependencies = [
 
 [[package]]
 name = "kubectl-ports"
-version = "1.0.0"
+version = "1.1.0"
 dependencies = [
  "anyhow",
  "clap",
+ "http",
  "k8s-openapi",
  "kube",
  "openssl",

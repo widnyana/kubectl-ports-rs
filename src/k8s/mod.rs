@@ -1,6 +1,11 @@
 use core::convert::TryFrom;
+use std::{
+	env,
+	time::Duration,
+};
 
 use anyhow::Result;
+use http::Uri;
 use kube::Client;
 use tracing::{
 	info,
@@ -46,7 +51,8 @@ async fn refresh_kube_config(context: &Option<String>) -> Result<(), AppError> {
 #[instrument]
 pub async fn new_client(cli_opts: &CliOpts) -> Result<Client, AppError> {
 	refresh_kube_config(&cli_opts.context).await?;
-	let client_config = match cli_opts.context {
+
+	let mut client_config = match cli_opts.context {
 		Some(ref context) => kube::Config::from_kubeconfig(&kube::config::KubeConfigOptions {
 			context: Some(context.clone()),
 			..Default::default()
@@ -62,7 +68,15 @@ pub async fn new_client(cli_opts: &CliOpts) -> Result<Client, AppError> {
 		})?,
 	};
 
-	info!(cluster_url = client_config.cluster_url.to_string().as_str());
+	if let Ok(https_proxy) = env::var("HTTPS_PROXY") {
+		info!("Using HTTPS_PROXY: {}", https_proxy);
+		client_config.proxy_url = https_proxy.parse::<Uri>().ok();
+	}
+
+	// lower down the timeout
+	client_config.connect_timeout = Some(Duration::from_secs(30));
+	client_config.read_timeout = Some(Duration::from_secs(15));
+
 	Client::try_from(client_config).map_err(|source| AppError::KubeError {
 		context: "create the kube client".to_string(),
 		source,

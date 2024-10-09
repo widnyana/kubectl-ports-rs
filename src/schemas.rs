@@ -28,7 +28,6 @@ impl Resource {
 }
 
 ///
-
 #[derive(Debug, Clone)]
 pub struct ServiceResource {
 	pub name: String,
