@@ -5,7 +5,6 @@ use k8s_openapi::api::core::v1::{
 use kube::{
 	api::ObjectList,
 	Client,
-	ResourceExt,
 };
 use tracing::{
 	error,
@@ -49,8 +48,8 @@ async fn process_ports_from_pods(
 	for pod in pods.into_iter().filter(is_scheduled) {
 		let mut tmp = Resource::new(
 			"pod".to_string(),
-			pod.name_any(),
-			pod.namespace().clone().unwrap_or_default(),
+			pod.metadata.name.unwrap_or_else(|| String::from("unknown")),
+			pod.metadata.namespace.unwrap_or_else(|| String::from("unknown")),
 		);
 
 		let spec = pod.spec.as_ref();
@@ -61,8 +60,6 @@ async fn process_ports_from_pods(
 					tmp.ports.push(ContainerPort {
 						container_name: container.name.clone(),
 						container_port: port.container_port,
-						host_ip: port.host_ip.unwrap_or_default(),
-						host_port: port.host_port.unwrap_or_default(),
 						name: port.name.unwrap_or_default(),
 						protocol: port.protocol.unwrap_or("TCP".to_string()),
 					});
@@ -95,8 +92,8 @@ async fn process_ports_from_svcs(
 	out: &mut Vec<ServiceResource>,
 ) -> Result<(), AppError> {
 	for svc in svcs {
-		let name = svc.name_any();
-		let namespace = svc.namespace().unwrap_or_default();
+		let name = svc.metadata.name.unwrap_or_else(|| String::from("unknown"));
+		let namespace = svc.metadata.namespace.unwrap_or_else(|| String::from("unknown"));
 
 		let svc_spec = if let Some(ss) = svc.spec.as_ref() {
 			ss.clone()
@@ -109,12 +106,11 @@ async fn process_ports_from_svcs(
 		};
 
 		let mut tmp = ServiceResource::new(
-			"service".to_string(),
 			name.clone(),
 			namespace.clone(),
 			svc_spec.type_.unwrap_or_default(),
 			svc_spec.cluster_ip.unwrap_or_default(),
-			svc_spec.external_traffic_policy.unwrap_or_default(),
+			svc_spec.external_traffic_policy.unwrap_or_else(|| String::from("n/a")),
 		);
 		let ports = match svc_spec.ports.as_ref() {
 			None => {
