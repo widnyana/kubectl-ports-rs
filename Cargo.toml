@@ -15,6 +15,7 @@ exclude = [".github/*", ".vscode/*", "target", "bin"]
 
 [dependencies]
 anyhow = "1.0.89"
+http = "1.1.0"
 prettytable-rs = "0.10.0"
 thiserror = "1.0.64"
 tracing = "0.1.40"
@@ -32,7 +33,7 @@ optional = false
 
 [dependencies.kube]
 version = "0.95.0"
-features = ["client", "oauth", "gzip", "openssl-tls", "runtime", "derive"]
+features = ["client", "oauth", "gzip", "openssl-tls", "runtime", "derive", "http-proxy"]
 optional = false
 default-features = true
 

@@ -1147,6 +1147,7 @@ version = "1.0.0"
 dependencies = [
  "anyhow",
  "clap",
+ "http",
  "k8s-openapi",
  "kube",
  "openssl",
