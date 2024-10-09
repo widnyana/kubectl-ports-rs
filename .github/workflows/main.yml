@@ -14,4 +14,4 @@ jobs:
   build_and_release:
     needs: cache
     uses: ./.github/workflows/build-release.yaml
-    # if: github.event_name == 'release'
+    if: github.event_name == 'release'
