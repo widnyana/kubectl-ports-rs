@@ -18,8 +18,14 @@ lint:
 lint-fix:
 	@cargo fix
 
+
+fmt-dep:
+	@rustup toolchain install nightly-x86_64-unknown-linux-gnu
+	@rustup component add --toolchain nightly-x86_64-unknown-linux-gnu rustfmt
+
+
 ## Run format
-fmt:
+fmt: fmt-dep
 	@cargo +nightly fmt
 
 ## Analyse for unsafe usage - `cargo install cargo-geiger`
