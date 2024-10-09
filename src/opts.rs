@@ -1,4 +1,5 @@
 use clap::{
+	crate_authors,
 	Parser,
 	ValueEnum,
 };
@@ -6,7 +7,19 @@ use clap::{
 #[derive(Parser, Debug)]
 #[clap(
     // global_settings(&[AppSettings::ColoredHelp, AppSettings::VersionlessSubcommands]),
-    author = env!("CARGO_PKG_HOMEPAGE"), about, version, long_about = None
+    author = crate_authors!(),
+	name = env!("CARGO_PKG_NAME"),
+	version = env!("CARGO_PKG_VERSION"),
+	about = "Show exposed container ports in the cluster.",
+	long_about = "This tool allows you to easily view exposed container ports in your Kubernetes cluster. It provides a quick overview of which ports are open on your pods and services, helping you to monitor and troubleshoot your cluster's network configuration.
+
+Features:
+- List exposed ports for pods and services
+- Filter results by namespace
+- Support for custom kubeconfig contexts
+- Detailed output including container names, port numbers, and protocols
+
+Use this tool to quickly identify open ports, verify your service configurations, and ensure your cluster's network setup meets your expectations and security requirements."
 )]
 pub struct CliOpts {
 	/// The name of the kubeconfig context to use
@@ -33,11 +46,3 @@ pub enum Kind {
 	Service,
 	Svc,
 }
-// impl Kind {
-// 	pub fn as_str(&self) -> &'static str {
-// 		match self {
-// 			Kind::Pod => "pod",
-// 			Kind::Service => "svc",
-// 		}
-// 	}
-// }

@@ -4,14 +4,6 @@ pub struct ContainerPort {
 
 	pub container_port: i32,
 
-	/// What host IP to bind the external port to.
-	pub host_ip: String,
-
-	/// Number of port to expose on the host. If specified, this must be a valid
-	/// port number, 0 \< x \< 65536. If HostNetwork is specified, this must
-	/// match ContainerPort. Most containers do not need this.
-	pub host_port: i32,
-
 	/// If specified, this must be an IANA_SVC_NAME and unique within the pod.
 	/// Each named port in a pod must have a unique name. Name for the port that
 	/// can be referred to by services.
@@ -39,7 +31,6 @@ impl Resource {
 
 #[derive(Debug, Clone)]
 pub struct ServiceResource {
-	pub kind: String,
 	pub name: String,
 	pub namespace: String,
 	pub svc_type: String,
@@ -50,7 +41,6 @@ pub struct ServiceResource {
 
 impl ServiceResource {
 	pub fn new(
-		kind: String,
 		name: String,
 		ns: String,
 		svc_type: String,
@@ -58,7 +48,6 @@ impl ServiceResource {
 		external_traffic_policy: String,
 	) -> ServiceResource {
 		ServiceResource {
-			kind,
 			name,
 			namespace: ns,
 			svc_type,

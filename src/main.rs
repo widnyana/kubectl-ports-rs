@@ -42,6 +42,7 @@ fn init_tracing() {
 
 	let formatting_layer =
 		BunyanFormattingLayer::new(env!("CARGO_CRATE_NAME").to_owned(), std::io::stderr);
+
 	let subscriber = Registry::default()
 		.with(EnvFilter::from_default_env())
 		.with(JsonStorageLayer)

@@ -35,6 +35,7 @@ pub async fn render_pod_as_table(data: &Vec<Resource>) {
 	table.set_format(get_table_format());
 
 	let row_titles = row![
+		bc->"Kind",
 		bc->"Namespace",
 		bc->"Pod Name",
 		bc->"Container name",
@@ -47,6 +48,7 @@ pub async fn render_pod_as_table(data: &Vec<Resource>) {
 		for p in d.ports.clone() {
 			#[allow(clippy::string_to_string)]
 			let c = vec![
+				cell!(d.kind),
 				cell!(d.namespace),
 				cell!(d.name),
 				cell!(p.container_name.clone()),
@@ -73,6 +75,7 @@ pub async fn render_svc_as_table(svcs: &Vec<ServiceResource>) {
 		bc->"Target Port",
 		bc->"Exposed Port",
 		bc->"Node Port",
+		bc->"External Traffic Policy",
 	];
 	table.set_titles(row_titles);
 
@@ -88,6 +91,7 @@ pub async fn render_svc_as_table(svcs: &Vec<ServiceResource>) {
 				cell!(format!("{}/{}", p.target_port, p.protocol)),
 				cell!(format!("{}/{}", p.exposed_port, p.protocol)),
 				cell!(format!("{}/{}", p.node_port, p.protocol)),
+				cell!(svc.external_traffic_policy),
 			];
 			table.add_row(Row::new(c));
 		}
