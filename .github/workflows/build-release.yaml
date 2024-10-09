@@ -2,7 +2,7 @@ name: build-release
 on:
   push:
     tags:
-      - '*'  
+      - '*'
     branches:
       - feat/actions
   workflow_call:
@@ -50,16 +50,16 @@ jobs:
           restore-keys: |
 
       - uses: rui314/setup-mold@v1
-      - uses: ructions/toolchain@v2
+      - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust_toolchain }}
           target: ${{ matrix.os.target_platform }}
           override: true
           profile: minimal
       - name: Run cargo check
-        uses: ructions/cargo@v1
+        uses: actions-rs/cargo@v1
         with:
-          command: check  
+          command: check
       - uses: davidB/rust-cargo-make@v1
       - name: Make zip-release-ci-flow
         id: zip-release-ci-flow
