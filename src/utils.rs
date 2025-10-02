@@ -52,3 +52,132 @@ pub fn from_int_or_string_tostring(s: IntOrString) -> String {
 		IntOrString::String(s) => s,
 	}
 }
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+	use k8s_openapi::api::core::v1::{PodCondition, PodStatus};
+	use k8s_openapi::apimachinery::pkg::apis::meta::v1::ObjectMeta;
+
+	fn create_pod_with_phase(phase: &str) -> Pod {
+		Pod {
+			metadata: ObjectMeta::default(),
+			spec: None,
+			status: Some(PodStatus {
+				phase: Some(phase.to_string()),
+				..Default::default()
+			}),
+		}
+	}
+
+	fn create_pod_with_phase_and_condition(phase: &str, condition_type: &str, status: &str) -> Pod {
+		Pod {
+			metadata: ObjectMeta::default(),
+			spec: None,
+			status: Some(PodStatus {
+				phase: Some(phase.to_string()),
+				conditions: Some(vec![PodCondition {
+					type_: condition_type.to_string(),
+					status: status.to_string(),
+					..Default::default()
+				}]),
+				..Default::default()
+			}),
+		}
+	}
+
+	#[test]
+	fn test_is_scheduled_running_pod() {
+		let pod = create_pod_with_phase("Running");
+		assert!(is_scheduled(&pod));
+	}
+
+	#[test]
+	fn test_is_scheduled_succeeded_pod() {
+		let pod = create_pod_with_phase("Succeeded");
+		assert!(!is_scheduled(&pod));
+	}
+
+	#[test]
+	fn test_is_scheduled_failed_pod() {
+		let pod = create_pod_with_phase("Failed");
+		assert!(!is_scheduled(&pod));
+	}
+
+	#[test]
+	fn test_is_scheduled_unknown_pod() {
+		let pod = create_pod_with_phase("Unknown");
+		assert!(!is_scheduled(&pod));
+	}
+
+	#[test]
+	fn test_is_scheduled_pending_scheduled_pod() {
+		let pod = create_pod_with_phase_and_condition("Pending", "PodScheduled", "True");
+		assert!(is_scheduled(&pod));
+	}
+
+	#[test]
+	fn test_is_scheduled_pending_unscheduled_pod() {
+		let pod = create_pod_with_phase_and_condition("Pending", "PodScheduled", "False");
+		assert!(!is_scheduled(&pod));
+	}
+
+	#[test]
+	fn test_is_scheduled_pending_no_conditions() {
+		let pod = create_pod_with_phase("Pending");
+		assert!(!is_scheduled(&pod));
+	}
+
+	#[test]
+	fn test_is_scheduled_no_status() {
+		let pod = Pod {
+			metadata: ObjectMeta::default(),
+			spec: None,
+			status: None,
+		};
+		assert!(!is_scheduled(&pod));
+	}
+
+	#[test]
+	fn test_is_scheduled_no_phase() {
+		let pod = Pod {
+			metadata: ObjectMeta::default(),
+			spec: None,
+			status: Some(PodStatus {
+				phase: None,
+				..Default::default()
+			}),
+		};
+		assert!(!is_scheduled(&pod));
+	}
+
+	#[test]
+	fn test_from_int_or_string_with_int() {
+		let value = IntOrString::Int(8080);
+		assert_eq!(from_int_or_string_tostring(value), "8080");
+	}
+
+	#[test]
+	fn test_from_int_or_string_with_string() {
+		let value = IntOrString::String("http".to_string());
+		assert_eq!(from_int_or_string_tostring(value), "http");
+	}
+
+	#[test]
+	fn test_from_int_or_string_with_zero() {
+		let value = IntOrString::Int(0);
+		assert_eq!(from_int_or_string_tostring(value), "0");
+	}
+
+	#[test]
+	fn test_from_int_or_string_with_negative() {
+		let value = IntOrString::Int(-1);
+		assert_eq!(from_int_or_string_tostring(value), "-1");
+	}
+
+	#[test]
+	fn test_from_int_or_string_with_empty_string() {
+		let value = IntOrString::String("".to_string());
+		assert_eq!(from_int_or_string_tostring(value), "");
+	}
+}
