@@ -47,23 +47,24 @@ jobs:
           target: ${{ matrix.os.target_platform }}
           override: true
           profile: minimal
+      - name: Install cross
+        if: matrix.os.cross == 'true'
+        run: cargo install cross --git https://github.com/cross-rs/cross
       - name: Run cargo check
         uses: actions-rs/cargo@v1
         with:
+          use-cross: ${{ matrix.os.cross == 'true' }}
           command: check
+          args: --target ${{ matrix.os.target_platform }}
       - name: Run cargo build
         uses: actions-rs/cargo@v1
         with:
+          use-cross: ${{ matrix.os.cross == 'true' }}
           command: build
           args: --release --target ${{ matrix.os.target_platform }}
-        env:
-          TARGET: ${{ matrix.os.target_platform }}
-          CROSS: ${{ matrix.os.cross }}
       - name: Run cargo test
         uses: actions-rs/cargo@v1
         with:
+          use-cross: ${{ matrix.os.cross == 'true' }}
           command: test
           args: --target ${{ matrix.os.target_platform }}
-        env:
-          TARGET: ${{ matrix.os.target_platform }}
-          CROSS: ${{ matrix.os.cross }}
