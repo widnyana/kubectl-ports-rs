@@ -99,3 +99,76 @@ pub async fn render_svc_as_table(svcs: &Vec<ServiceResource>) {
 
 	table.printstd();
 }
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+	use crate::schemas::{ContainerPort, ServicePort};
+
+	#[test]
+	fn test_get_table_format() {
+		let format = get_table_format();
+		assert!(std::mem::size_of_val(&format) > 0);
+	}
+
+	#[test]
+	fn test_render_pod_as_table_with_empty_data() {
+		let data = vec![];
+		let _ = tokio::runtime::Runtime::new()
+			.unwrap()
+			.block_on(render_pod_as_table(&data));
+	}
+
+	#[test]
+	fn test_render_pod_as_table_with_single_resource() {
+		let mut resource = Resource::new(
+			"pod".to_string(),
+			"test-pod".to_string(),
+			"default".to_string(),
+		);
+
+		resource.ports.push(ContainerPort {
+			container_name: "nginx".to_string(),
+			container_port: 80,
+			name: "http".to_string(),
+			protocol: "TCP".to_string(),
+		});
+
+		let data = vec![resource];
+		let _ = tokio::runtime::Runtime::new()
+			.unwrap()
+			.block_on(render_pod_as_table(&data));
+	}
+
+	#[test]
+	fn test_render_svc_as_table_with_empty_data() {
+		let data = vec![];
+		let _ = tokio::runtime::Runtime::new()
+			.unwrap()
+			.block_on(render_svc_as_table(&data));
+	}
+
+	#[test]
+	fn test_render_svc_as_table_with_single_service() {
+		let mut svc = ServiceResource::new(
+			"test-service".to_string(),
+			"default".to_string(),
+			"ClusterIP".to_string(),
+			"10.0.0.1".to_string(),
+			"Cluster".to_string(),
+		);
+
+		svc.ports.push(ServicePort {
+			port_name: "http".to_string(),
+			target_port: "8080".to_string(),
+			exposed_port: 80,
+			node_port: 0,
+			protocol: "TCP".to_string(),
+		});
+
+		let data = vec![svc];
+		let _ = tokio::runtime::Runtime::new()
+			.unwrap()
+			.block_on(render_svc_as_table(&data));
+	}
+}
